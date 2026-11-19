@@ -1,0 +1,44 @@
+{
+  "name": "kubodeck",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "prepare-assets": "node scripts/copy-wasm.mjs",
+    "pretest": "npm run prepare-assets",
+    "prebuild": "npm run prepare-assets",
+    "test": "vitest run",
+    "verify": "npm run prepare-assets && next typegen && tsc --noEmit && vitest run && next build",
+    "prepare": "husky",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "fflate": "^0.8.3",
+    "manifold-3d": "^3.5.5",
+    "next": "16.4.6",
+    "opentype.js": "^2.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.187.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "husky": "^9.1.7",
+    "jsdom": "^31.0.1",
+    "lint-staged": "^17.6.1",
+    "prettier": "^3.10.1",
+    "typescript": "^5",
+    "vitest": "^5.1.1"
+  }
+}
