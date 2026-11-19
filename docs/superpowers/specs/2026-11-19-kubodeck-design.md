@@ -9,15 +9,15 @@ KuboDeck è un configuratore web di deck box per carte (TCG, sleeve doppie `67 �
 1. **Prima di tutto un pezzo da portfolio**: stack production-grade (Next.js App Router, TypeScript strict, React Three Fiber, CAD procedurale nel browser) con una viewport 3D fluida ed estetica da studio di industrial design.
 2. **Poi un servizio a pagamento**: stampa su richiesta (e in seguito altro). La v1 lo predispone senza implementarlo.
 
-Decisione dell'utente: gli STL della v1 sono stampabili e verificati con una stampa reale sulla A1 Mini, non indicativi. Si parte da un solo modello (Standard 100); gli altri seguono.
+Decisione dell'utente: gli STL della v1 sono stampabili e verificati con una stampa reale sulla A1 Mini, non indicativi. Si parte da un solo modello (Standard 60); gli altri seguono.
 
 ## Obiettivi (v1)
 
-- Modello **Standard 100**: corpo + coperchio a incastro, in mm reali (1 unità = 1 mm), dimensioni default `78 × 78 × 104 mm`, pareti `2.8 mm`, gioco coperchio `0.30 mm` (valori del piano, da confermare con la stampa di prova).
+- Modello **Standard 60**: corpo + coperchio a incastro, in mm reali (1 unità = 1 mm), capacità 60 carte con doppia bustina, larghezza `78 mm` e altezza `104 mm` (dal piano), profondità ricavata dalla pila, pareti `2.8 mm`, gioco coperchio `0.30 mm` (valori del piano, da confermare con la stampa di prova).
 - Sedi magneti opzionali `6×2` / `8×2 mm` su corpo e coperchio.
 - Filamenti Bambu Lab simulati con materiali PBR (PLA Matte, Basic, Silk, PLA-CF) e **4 zone colore** (corpo, coperchio, accento, testo/emblema).
 - **Testo in rilievo** `+0.8 mm` su fronte o coperchio, 1-2 font inclusi; **emblemi** dalla libreria interna (SVG pre-validati), in rilievo.
-- **Preset showcase** cliccabili (3-4), adattati al solo Standard 100 (es. *Obsidian*, *Terracotta Matte*, *Silk Gold*).
+- **Preset showcase** cliccabili (3-4), adattati al solo Standard 60 (es. *Obsidian*, *Terracotta Matte*, *Silk Gold*).
 - **Vista piatto A1 Mini**: le parti si separano e si appoggiano sul piatto `180 × 180 mm` con griglia 10 mm e badge di compatibilità.
 - **Export STL binario Z-up**, una parte per file (corpo, coperchio, e le parti di colore diverso come STL separati con origine comune, così in Bambu Studio si caricano come parti di un oggetto e si assegnano gli slot AMS).
 - **Stima peso PLA** dal volume reale della mesh manifold (× densità del filamento).
@@ -32,7 +32,7 @@ Decisione dell'utente: gli STL della v1 sono stampabili e verificati con una sta
 
 ## Anti-obiettivi
 
-- Un STL che lo slicer segnala come non manifold, o che stampato non si chiude/non contiene 100 carte imbustate: la v1 è fallita anche se il sito è bello.
+- Un STL che lo slicer segnala come non manifold, o che stampato non si chiude/non contiene 60 carte imbustate: la v1 è fallita anche se il sito è bello.
 - Primo caricamento pesante: la pagina deve mostrare subito il contenuto, la viewport arriva dopo (lazy).
 - Promettere cose che non finiscono nella stampa (es. un'immagine visibile solo nell'anteprima).
 
@@ -60,14 +60,14 @@ Scelto dall'utente: **1**. Three.js da solo (o `three-bvh-csg`) è escluso: non 
 - **Geometria**: funzioni pure `config → parti manifold` costruite con manifold-3d; la stessa mesh alimenta viewport ed export, così ciò che si vede è ciò che si stampa.
 - **Testo**: `opentype.js` → contorni → estrusione manifold → unione con la parete.
 - **Controlli automatici sulla geometria generata** (l'equivalente di `checks/check_fit.py` di magsafe), come test: ogni parte manifold, ingombro ≤ `180³` e sul piatto, gioco coperchio, spessore minimo residuo nelle zone con sedi magneti e testo, l'interno contiene il volume della pila di carte.
-- **Stampa di prova** dello Standard 100 sulla A1 Mini prima di chiamare finita la v1.
+- **Stampa di prova** dello Standard 60 sulla A1 Mini prima di chiamare finita la v1.
 
 ## Scelte prese in revisione (calls di Claude, da controllare)
 
 - **Coperchio**: a calotta (lift-off). Il corpo ha in alto un colletto rientrato; la calotta ci scorre sopra con il gioco di `0.30 mm`, a filo con le pareti esterne. Sta chiusa per attrito; i magneti, se attivi, aiutano la chiusura.
 - **Orientamento di stampa**: corpo in piedi con l'apertura in alto; calotta capovolta, con la faccia superiore sul piatto. Niente supporti.
-- **Dimensioni**: `78 × 78 × 104` sono esterne. La larghezza contiene il lato da 67 mm della carta, la profondità contiene la pila, l'altezza contiene i 93 mm.
-- **Spessore della pila di carte**: è un parametro (`stackThicknessMm`) e non è stato misurato. Il valore di partenza è una **stima** che il builder dichiara come tale, e si tara con la stampa di prova. Il controllo che l'interno contenga la pila usa questo parametro. Se il valore tarato non entra nei `72.4 mm` interni, la profondità esterna cresce.
+- **Dimensioni**: tutte esterne. Larghezza `78` e altezza `104` vengono dal piano. La profondità è `stackThicknessMm + 2 × parete + gioco carte`, perché il `78` del piano era pensato per 100 carte. La larghezza contiene il lato da 67 mm della carta, la profondità contiene la pila, l'altezza contiene i 93 mm.
+- **Spessore della pila di carte**: è un parametro (`stackThicknessMm`) e non è stato misurato. Il valore di partenza è una **stima** che il builder dichiara come tale, e si tara con la stampa di prova. Il controllo che l'interno contenga la pila usa questo parametro. Il valore di partenza è per 60 carte.
 - **Colori e testo**:
   - Sul fronte, testo ed emblema sono solidi separati appoggiati sulla parete: rilievo di `+0.8 mm`, il corpo resta intero.
   - Sulla calotta stanno sulla faccia che tocca il piatto, quindi sono **intarsi a filo**: profondi `0.6 mm`, sottratti alla calotta ed esportati come parte separata (il "a filo" del piano). Il risultato è un primo layer multicolore.
