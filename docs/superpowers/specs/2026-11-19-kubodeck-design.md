@@ -1,6 +1,6 @@
 # KuboDeck — design
 
-Stato: bozza da approvare (2026-11-19). Origine: `implementation_plan.md` dell'utente, rivisto in brainstorming.
+Stato: approvato dall'utente (2026-11-19). Origine: `implementation_plan.md` dell'utente, rivisto in brainstorming.
 
 ## Intento e perché
 
@@ -14,8 +14,7 @@ Decisione dell'utente: gli STL della v1 sono stampabili e verificati con una sta
 ## Obiettivi (v1)
 
 - Modello **Standard 60**: corpo + coperchio a incastro, in mm reali (1 unità = 1 mm), capacità 60 carte con doppia bustina, larghezza `78 mm` e altezza `104 mm` (dal piano), profondità ricavata dalla pila, pareti `2.8 mm`, gioco coperchio `0.30 mm` (valori del piano, da confermare con la stampa di prova).
-- Sedi magneti opzionali `6×2` / `8×2 mm` su corpo e coperchio.
-- Filamenti Bambu Lab simulati con materiali PBR (PLA Matte, Basic, Silk, PLA-CF) e **4 zone colore** (corpo, coperchio, accento, testo/emblema).
+- Filamenti Bambu Lab simulati con materiali PBR (PLA Matte, Basic, Silk, PLA-CF) e **4 zone colore**: corpo, coperchio, accento (il colletto, visibile a scatola aperta) e testo/emblema.
 - **Testo in rilievo** `+0.8 mm` su fronte o coperchio, 1-2 font inclusi; **emblemi** dalla libreria interna (SVG pre-validati), in rilievo.
 - **Preset showcase** cliccabili (3-4), adattati al solo Standard 60 (es. *Obsidian*, *Terracotta Matte*, *Silk Gold*).
 - **Vista piatto A1 Mini**: le parti si separano e si appoggiano sul piatto `180 × 180 mm` con griglia 10 mm e badge di compatibilità.
@@ -27,6 +26,7 @@ Decisione dell'utente: gli STL della v1 sono stampabili e verificati con una sta
 
 - Modelli Commander Display, Twin, Tower/cassetto dadi (dopo che lo Standard è stato stampato e validato).
 - Testo inciso; upload SVG dell'utente; decal PNG/JPG.
+- Sedi per magneti: con larghezza `78` e pareti `2.8` non c'è spazio (agio interno 2,7 mm per lato). Arrivano con un modello più largo (decisione dell'utente, 2026-11-19).
 - `/api/order`, Stripe, database, prezzo di vendita; slider di stampa (pareti, tolleranze) esposti all'utente.
 - Export 3MF, snapshot PNG, export/import JSON.
 
@@ -59,12 +59,12 @@ Scelto dall'utente: **1**. Three.js da solo (o `three-bvh-csg`) è escluso: non 
 - **Next.js App Router + TypeScript strict + CSS puro** (decisione del piano). Viewport in un modulo client caricato con `next/dynamic(..., { ssr: false })` e uno skeleton.
 - **Geometria**: funzioni pure `config → parti manifold` costruite con manifold-3d; la stessa mesh alimenta viewport ed export, così ciò che si vede è ciò che si stampa.
 - **Testo**: `opentype.js` → contorni → estrusione manifold → unione con la parete.
-- **Controlli automatici sulla geometria generata** (l'equivalente di `checks/check_fit.py` di magsafe), come test: ogni parte manifold, ingombro ≤ `180³` e sul piatto, gioco coperchio, spessore minimo residuo nelle zone con sedi magneti e testo, l'interno contiene il volume della pila di carte.
+- **Controlli automatici sulla geometria generata** (l'equivalente di `checks/check_fit.py` di magsafe), come test: ogni parte manifold, ingombro ≤ `180³` e sul piatto, gioco coperchio, testo e intarsi dentro la faccia, l'interno contiene il volume della pila di carte.
 - **Stampa di prova** dello Standard 60 sulla A1 Mini prima di chiamare finita la v1.
 
 ## Scelte prese in revisione (calls di Claude, da controllare)
 
-- **Coperchio**: a calotta (lift-off). Il corpo ha in alto un colletto rientrato; la calotta ci scorre sopra con il gioco di `0.30 mm`, a filo con le pareti esterne. Sta chiusa per attrito; i magneti, se attivi, aiutano la chiusura.
+- **Coperchio**: a calotta (lift-off). Il corpo ha in alto un colletto rientrato; la calotta ci scorre sopra con il gioco di `0.30 mm`, a filo con le pareti esterne. Sta chiusa per attrito. Quote di partenza: colletto spesso `1.2 mm`, gioco `0.30`, parete laterale della calotta `1.3 mm`, così colletto + gioco + calotta = parete `2.8` e il vano resta uguale dal fondo all'apertura. Calotta alta `30 mm` esterni, corpo `74 mm`, gioco verticale `0.30` tra colletto e soffitto della calotta. Il colletto è una parte a sé nella zona accento. Il colletto ha uno smusso d'invito `0.6 × 45°` sullo spigolo esterno in alto e, sul fronte, una presa per le dita larga `24 mm` da `z 86` in su, perché la cima delle carte resta 5 mm sotto il bordo del colletto.
 - **Orientamento di stampa**: corpo in piedi con l'apertura in alto; calotta capovolta, con la faccia superiore sul piatto. Niente supporti.
 - **Dimensioni**: tutte esterne. Larghezza `78` e altezza `104` vengono dal piano. La profondità è `stackThicknessMm + 2 × parete + gioco carte`, perché il `78` del piano era pensato per 100 carte. La larghezza contiene il lato da 67 mm della carta, la profondità contiene la pila, l'altezza contiene i 93 mm.
 - **Spessore della pila di carte**: è un parametro (`stackThicknessMm`) e non è stato misurato. Il valore di partenza è una **stima** che il builder dichiara come tale, e si tara con la stampa di prova. Il controllo che l'interno contenga la pila usa questo parametro. Il valore di partenza è per 60 carte.
@@ -87,4 +87,4 @@ Scelto dall'utente: **1**. Three.js da solo (o `three-bvh-csg`) è escluso: non 
 - Come costruire smussi e invito del coperchio con le primitive di manifold-3d.
 - Generazione nel main thread o in un Web Worker (Worker consigliato se la rigenerazione supera ~50 ms).
 - Struttura dei test e strumenti (Vitest o simili), purché `tsc --noEmit`, build e controlli geometrici girino con un comando.
-- Design visivo nei dettagli, dentro l'indirizzo "industrial design studio" del piano (font del piano: Plus Jakarta Sans, JetBrains Mono).
+- Design visivo nei dettagli, dentro l'indirizzo "industrial design studio" del piano (font del piano: Plus Jakarta Sans, JetBrains Mono). Lo stile passa da tutto il flusso di `/impeccable`: `init` (PRODUCT.md), `shape`, new-work con DESIGN.md, craft-floor prima di ogni modifica alla UI, poi `critique`, `audit`, `polish`, `harden` e `adapt` (richiesta dell'utente, 2026-11-19).
