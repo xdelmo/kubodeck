@@ -3,6 +3,7 @@ import type { Wasm } from './wasm';
 import { capToAssembled, disposeParts, type Part } from './box';
 import { layoutOnPlate } from './plate';
 import { DIMENSIONS, depthMm, type BoxConfig } from '../config';
+import { sectionStrokeOk } from './art';
 
 export interface Check {
   id:
@@ -139,6 +140,40 @@ export function runChecks(
       clashes.length === 0,
       'Le zone colore non si sovrappongono.',
       `Zone colore sovrapposte (${clashes.join(', ')}): sposta testo o emblema su un'altra faccia e rigenera.`,
+    ),
+  );
+
+  // Il tratto minimo si misura sulla sezione di ciò che si stampa, a metà spessore del rilievo.
+  const thin: string[] = [];
+  const front = find('frontArt');
+  if (front) {
+    const upright = front.manifold.rotate([-90, 0, 0]);
+    try {
+      const cs = upright.slice(DIMENSIONS.reliefFront / 2);
+      try {
+        if (!sectionStrokeOk(cs)) thin.push('fronte');
+      } finally {
+        cs.delete();
+      }
+    } finally {
+      upright.delete();
+    }
+  }
+  const capArt = find('capArt');
+  if (capArt) {
+    const cs = capArt.manifold.slice(DIMENSIONS.inlayCap / 2);
+    try {
+      if (!sectionStrokeOk(cs)) thin.push('calotta');
+    } finally {
+      cs.delete();
+    }
+  }
+  out.push(
+    check(
+      'minStroke',
+      thin.length === 0,
+      'Ogni tratto di testo ed emblema è largo almeno 0,8 mm.',
+      `Tratti sotto 0,8 mm (${thin.join(', ')}): l'ugello da 0,4 non li stampa. Usa il font più spesso o un testo più corto.`,
     ),
   );
 
