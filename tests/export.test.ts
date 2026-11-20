@@ -106,6 +106,7 @@ describe('buildExportZip', () => {
     const files = unzipSync(buildExportZip(partsFor(DEFAULT_CONFIG)));
     expect(Object.keys(files).sort()).toEqual(ALL);
     expect(strFromU8(files['LEGGIMI.txt'])).toContain('Bambu Studio');
+    expect(strFromU8(files['LEGGIMI.txt'])).toContain('Printing instructions');
   });
 
   test('senza testo né emblema mancano solo i file *-art.stl', () => {

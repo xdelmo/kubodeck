@@ -16,7 +16,9 @@ export interface Check {
     | 'glyphs'
     | 'zonesDisjoint';
   ok: boolean;
+  /** Messaggio in italiano; la UI traduce da id, ok e data (src/lib/i18n.ts). */
   message: string;
+  data?: Record<string, string | number>;
 }
 
 const EPS = 1e-6;
@@ -28,10 +30,17 @@ const overlap = (a: Manifold, b: Manifold): number => {
     i.delete();
   }
 };
-const check = (id: Check['id'], ok: boolean, okMsg: string, failMsg: string): Check => ({
+const check = (
+  id: Check['id'],
+  ok: boolean,
+  okMsg: string,
+  failMsg: string,
+  data?: Check['data'],
+): Check => ({
   id,
   ok,
   message: ok ? okMsg : failMsg,
+  ...(data && { data }),
 });
 
 export function runChecks(
@@ -50,6 +59,7 @@ export function runChecks(
       broken.length === 0,
       'Tutte le parti sono solidi chiusi.',
       `Parti non stampabili (${broken.map((p) => p.id).join(', ')}): cambia testo o emblema e rigenera.`,
+      { parts: broken.map((p) => p.id).join(', ') },
     ),
   );
 
@@ -71,6 +81,7 @@ export function runChecks(
       fits,
       `Ingombro ${footprint.x.toFixed(1)} × ${footprint.y.toFixed(1)} mm: entra nel piatto A1 Mini.`,
       `Ingombro ${footprint.x.toFixed(1)} × ${footprint.y.toFixed(1)} × ${height.toFixed(1)} mm: non entra nel piatto 180 × 180 con 5 mm di margine. Riduci lo spessore della pila.`,
+      { x: footprint.x, y: footprint.y, h: height },
     ),
   );
 
@@ -119,6 +130,7 @@ export function runChecks(
           holds && D >= depthMm(stack) - 0.001,
           `Il vano contiene una pila di ${stack} mm.`,
           `La pila da ${stack} mm non entra nel vano: rigenera la scatola o riduci lo spessore della pila.`,
+          { stack },
         ),
       );
     } finally {
@@ -140,6 +152,7 @@ export function runChecks(
       clashes.length === 0,
       'Le zone colore non si sovrappongono.',
       `Zone colore sovrapposte (${clashes.join(', ')}): sposta testo o emblema su un'altra faccia e rigenera.`,
+      { clashes: clashes.join(', ') },
     ),
   );
 
@@ -151,7 +164,7 @@ export function runChecks(
     try {
       const cs = upright.slice(DIMENSIONS.reliefFront / 2);
       try {
-        if (!sectionStrokeOk(cs)) thin.push('fronte');
+        if (!sectionStrokeOk(cs)) thin.push('front');
       } finally {
         cs.delete();
       }
@@ -163,7 +176,7 @@ export function runChecks(
   if (capArt) {
     const cs = capArt.manifold.slice(DIMENSIONS.inlayCap / 2);
     try {
-      if (!sectionStrokeOk(cs)) thin.push('calotta');
+      if (!sectionStrokeOk(cs)) thin.push('cap');
     } finally {
       cs.delete();
     }
@@ -173,7 +186,8 @@ export function runChecks(
       'minStroke',
       thin.length === 0,
       'Ogni tratto di testo ed emblema è largo almeno 0,8 mm.',
-      `Tratti sotto 0,8 mm (${thin.join(', ')}): l'ugello da 0,4 non li stampa. Usa il font più spesso o un testo più corto.`,
+      `Tratti sotto 0,8 mm (${thin.map((f) => (f === 'front' ? 'fronte' : 'calotta')).join(', ')}): l'ugello da 0,4 non li stampa. Accorcia il testo o scegli un emblema più semplice.`,
+      { faces: thin.join(', ') },
     ),
   );
 

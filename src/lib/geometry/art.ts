@@ -203,6 +203,7 @@ export function composeArt(
         missing.length === 0
           ? 'Tutti i caratteri sono nel font.'
           : `Il font non ha questi caratteri: ${[...new Set(missing)].join(' ')}. Toglili o cambia font.`,
+      ...(missing.length > 0 && { data: { chars: [...new Set(missing)].join(' ') } }),
     },
     {
       id: 'artFitsFace',

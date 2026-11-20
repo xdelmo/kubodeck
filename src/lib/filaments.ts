@@ -4,6 +4,7 @@ import type { FilamentId, ZoneId } from './config';
 export interface Filament {
   id: FilamentId;
   name: string;
+  nameEn: string;
   line: 'PLA Matte' | 'PLA Basic';
   /** Codice colore Bambu Lab (numero sulla bobina). */
   code: string;
@@ -36,9 +37,10 @@ const MATTE_PBR = { roughness: 0.9, metalness: 0, sheen: 0.25 };
 const BASIC_PBR = { roughness: 0.45, metalness: 0, clearcoat: 0.15 };
 const BASIC_METALLIC_PBR = { roughness: 0.35, metalness: 0.45, clearcoat: 0.2 };
 
-const matte = (id: string, name: string, code: string, hex: string): Filament => ({
+const matte = (id: string, name: string, nameEn: string, code: string, hex: string): Filament => ({
   id,
   name,
+  nameEn,
   line: 'PLA Matte',
   code,
   hex,
@@ -46,9 +48,17 @@ const matte = (id: string, name: string, code: string, hex: string): Filament =>
   sources: MATTE_SOURCES,
   pbr: MATTE_PBR,
 });
-const basic = (id: string, name: string, code: string, hex: string, pbr = BASIC_PBR): Filament => ({
+const basic = (
+  id: string,
+  name: string,
+  nameEn: string,
+  code: string,
+  hex: string,
+  pbr = BASIC_PBR,
+): Filament => ({
   id,
   name,
+  nameEn,
   line: 'PLA Basic',
   code,
   hex,
@@ -58,17 +68,17 @@ const basic = (id: string, name: string, code: string, hex: string, pbr = BASIC_
 });
 
 const LIST: Filament[] = [
-  matte('pla-matte-charcoal', 'Carbone', '11101', '#000000'),
-  matte('pla-matte-ivory', 'Bianco avorio', '11100', '#ffffff'),
-  matte('pla-matte-terracotta', 'Terracotta', '11203', '#b15533'),
-  matte('pla-matte-sakura', 'Rosa sakura', '11201', '#e8afcf'),
-  matte('pla-matte-marine-blue', 'Blu marino', '11600', '#0078bf'),
-  basic('pla-basic-white', 'Bianco giada', '10100', '#ffffff'),
-  basic('pla-basic-black', 'Nero', '10101', '#000000'),
-  basic('pla-basic-red', 'Rosso', '10200', '#c12e1f'),
-  basic('pla-basic-blue', 'Blu', '10601', '#0a2989'),
-  basic('pla-basic-gold', 'Oro', '10401', '#e4bd68', BASIC_METALLIC_PBR),
-  basic('pla-basic-silver', 'Argento', '10102', '#a6a9aa', BASIC_METALLIC_PBR),
+  matte('pla-matte-charcoal', 'Carbone', 'Charcoal', '11101', '#000000'),
+  matte('pla-matte-ivory', 'Bianco avorio', 'Ivory White', '11100', '#ffffff'),
+  matte('pla-matte-terracotta', 'Terracotta', 'Terracotta', '11203', '#b15533'),
+  matte('pla-matte-sakura', 'Rosa sakura', 'Sakura Pink', '11201', '#e8afcf'),
+  matte('pla-matte-marine-blue', 'Blu marino', 'Marine Blue', '11600', '#0078bf'),
+  basic('pla-basic-white', 'Bianco giada', 'Jade White', '10100', '#ffffff'),
+  basic('pla-basic-black', 'Nero', 'Black', '10101', '#000000'),
+  basic('pla-basic-red', 'Rosso', 'Red', '10200', '#c12e1f'),
+  basic('pla-basic-blue', 'Blu', 'Blue', '10601', '#0a2989'),
+  basic('pla-basic-gold', 'Oro', 'Gold', '10401', '#e4bd68', BASIC_METALLIC_PBR),
+  basic('pla-basic-silver', 'Argento', 'Silver', '10102', '#a6a9aa', BASIC_METALLIC_PBR),
 ];
 
 export const FILAMENTS: Record<FilamentId, Filament> = Object.fromEntries(
