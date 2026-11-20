@@ -1,0 +1,117 @@
+/* Token della tavola CMF (contratto in .impeccable/surfaces/src-app-page-tsx.md). */
+:root {
+  /* Colore: cartone di presentazione, inchiostro, etichette, un solo arancio di richiamo. */
+  --board: #d9d8d3;
+  --board-deep: #cfcec8;
+  --stock: #fbfbf9;
+  --stock-pressed: #f1f0ec;
+  --ink: #1b1c1e;
+  --ink-muted: #5c5d60; /* 4,6:1 sul cartone, 6,3:1 sull'etichetta */
+  --hairline: #c2c1bc; /* solo filetti decorativi */
+  --control-edge: #8f8e89; /* bordo dei controlli: 3,2:1 sull'etichetta */
+  --signal: #c8461b; /* richiami numerati e azione primaria: 4,7:1 con testo chiaro */
+  --signal-hover: #b93f16;
+  --on-signal: #fbfbf9;
+  --ok: #1d7a47;
+  --fail: #b42318;
+  --focus: #1b1c1e;
+  --selection: rgb(200 70 27 / 0.22);
+
+  /* Tipi: Plus Jakarta Sans per l'interfaccia, JetBrains Mono per codici, mm e grammi. */
+  --font-sans: var(--font-jakarta, 'Plus Jakarta Sans'), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains, 'JetBrains Mono'), ui-monospace, monospace;
+  --text-2xs: 0.6875rem; /* 11 px: etichette di sezione, quote */
+  --text-xs: 0.75rem; /* 12 px */
+  --text-sm: 0.8125rem; /* 13 px: corpo del pannello */
+  --text-md: 1rem; /* 16 px: totale del peso */
+  --text-lg: 1.125rem; /* 18 px: marchio */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --weight-heavy: 800;
+  --tracking-label: 0.06em;
+  --tracking-mark: -0.02em;
+
+  /* Spazi su base 4 px. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Forma: filetti da 1 px, raggio piccolo, ombre solo sotto campioni e modello. */
+  --rule: 1px;
+  --radius: 4px;
+  --radius-chip: 3px;
+  --shadow-sample: 0 4px 10px rgb(27 28 30 / 0.14);
+  --shadow-label: 0 2px 6px rgb(27 28 30 / 0.06);
+
+  /* Movimento: uscita esponenziale, un solo momento d'autore (cambio vista montata/piatto). */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-view: 520ms;
+
+  --panel-width: 560px;
+  color-scheme: light;
+}
+
+/* Tema scuro: la stessa tavola sotto luce bassa. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --board: #26272a;
+    --board-deep: #1f2022;
+    --stock: #303134;
+    --stock-pressed: #3a3b3f;
+    --ink: #e8e7e2;
+    --ink-muted: #aaaaa5; /* 4,8:1 sull'etichetta premuta */
+    --hairline: #45464a;
+    --control-edge: #7c7d80;
+    --signal: #f0743f;
+    --signal-hover: #f58a5c;
+    --on-signal: #1b1c1e;
+    --ok: #4fbf7f;
+    --fail: #f97066;
+    --focus: #e8e7e2;
+    --selection: rgb(240 116 63 / 0.3);
+    --shadow-sample: 0 4px 10px rgb(0 0 0 / 0.4);
+    --shadow-label: 0 2px 6px rgb(0 0 0 / 0.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --board: #26272a;
+  --board-deep: #1f2022;
+  --stock: #303134;
+  --stock-pressed: #3a3b3f;
+  --ink: #e8e7e2;
+  --ink-muted: #aaaaa5; /* 4,8:1 sull'etichetta premuta */
+  --hairline: #45464a;
+  --control-edge: #7c7d80;
+  --signal: #f0743f;
+  --signal-hover: #f58a5c;
+  --on-signal: #1b1c1e;
+  --ok: #4fbf7f;
+  --fail: #f97066;
+  --focus: #e8e7e2;
+  --selection: rgb(240 116 63 / 0.3);
+  --shadow-sample: 0 4px 10px rgb(0 0 0 / 0.4);
+  --shadow-label: 0 2px 6px rgb(0 0 0 / 0.25);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-view: 0ms;
+  }
+}
+
+/* Sul telefono niente testo sotto i 12 px. */
+@media (max-width: 900px) {
+  :root {
+    --text-2xs: 0.75rem;
+  }
+}
