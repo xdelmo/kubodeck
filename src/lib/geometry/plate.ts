@@ -11,13 +11,16 @@ const bboxOf = (ps: Part[]): Bbox => {
   };
 };
 
+export type Vec3 = [number, number, number];
+
 // Gli oggetti (corpo, calotta) si affiancano in Y; le parti di un oggetto si spostano insieme,
 // così i file STL condividono l'origine e in Bambu Studio restano allineati.
-export function layoutOnPlate(
-  _wasm: Wasm,
-  parts: Part[],
-): { parts: Part[]; footprint: { x: number; y: number } } {
-  const offsets = new Map<Part['object'], [number, number, number]>();
+// Funzione pura: la usano sia l'export sia la vista piatto.
+export function plateOffsets(parts: Part[]): {
+  offsets: Partial<Record<Part['object'], Vec3>>;
+  footprint: { x: number; y: number };
+} {
+  const offsets: Partial<Record<Part['object'], Vec3>> = {};
   let y = 0;
   let x = 0;
   for (const object of ['body', 'cap'] as const) {
@@ -25,12 +28,20 @@ export function layoutOnPlate(
     if (group.length === 0) continue;
     const b = bboxOf(group);
     if (y > 0) y += DIMENSIONS.plate.margin;
-    offsets.set(object, [-b.min[0], y - b.min[1], -b.min[2]]);
+    offsets[object] = [-b.min[0], y - b.min[1], -b.min[2]];
     y += b.max[1] - b.min[1];
     x = Math.max(x, b.max[0] - b.min[0]);
   }
+  return { offsets, footprint: { x, y } };
+}
+
+export function layoutOnPlate(
+  _wasm: Wasm,
+  parts: Part[],
+): { parts: Part[]; footprint: { x: number; y: number } } {
+  const { offsets, footprint } = plateOffsets(parts);
   return {
-    parts: parts.map((p) => ({ ...p, manifold: p.manifold.translate(offsets.get(p.object)!) })),
-    footprint: { x, y },
+    parts: parts.map((p) => ({ ...p, manifold: p.manifold.translate(offsets[p.object]!) })),
+    footprint,
   };
 }

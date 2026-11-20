@@ -3,7 +3,7 @@ import { DEFAULT_CONFIG } from '../../src/lib/config';
 import { getManifold, type Wasm } from '../../src/lib/geometry/wasm';
 import { buildParts, disposeParts, type Part } from '../../src/lib/geometry/box';
 import { runChecks } from '../../src/lib/geometry/checks';
-import { layoutOnPlate } from '../../src/lib/geometry/plate';
+import { layoutOnPlate, plateOffsets } from '../../src/lib/geometry/plate';
 
 let wasm: Wasm;
 let parts: Part[];
@@ -77,6 +77,24 @@ describe('layoutOnPlate', () => {
       expect(c.message).toMatch(/\b(riduci|accorcia|scegli|cambia)\b/i);
     } finally {
       big.manifold.delete();
+    }
+  });
+});
+
+describe('plateOffsets', () => {
+  test('dà gli stessi spostamenti di layoutOnPlate, senza creare manifold', () => {
+    const { offsets, footprint } = plateOffsets(parts);
+    const { parts: laid, footprint: f2 } = layoutOnPlate(wasm, parts);
+    try {
+      expect(footprint).toEqual(f2);
+      for (const p of parts) {
+        const a = p.manifold.boundingBox();
+        const b = laid.find((q) => q.id === p.id)!.manifold.boundingBox();
+        const o = offsets[p.object]!;
+        for (let i = 0; i < 3; i++) expect(b.min[i]).toBeCloseTo(a.min[i] + o[i], 6);
+      }
+    } finally {
+      disposeParts(laid);
     }
   });
 });
