@@ -109,10 +109,13 @@ export function textToPolygons(
   text: string,
   capHeightMm: number,
 ): { polygons: Polygons | null; missing: string[] } {
-  const chars = Array.from(text);
-  const missing = chars.filter((ch) => ch.trim() !== '' && font.charToGlyphIndex(ch) === 0);
-  const kept = chars.filter((ch) => !missing.includes(ch)).join('');
-  if (kept.trim() === '') return { polygons: null, missing };
+  const chars = Array.from(text.replace(/^ +| +$/g, ''));
+  const missing = chars.filter((ch) => ch !== ' ' && font.charToGlyphIndex(ch) === 0);
+  const kept = chars
+    .filter((ch) => !missing.includes(ch))
+    .join('')
+    .replace(/^ +| +$/g, '');
+  if (kept === '') return { polygons: null, missing };
 
   let capUnits = font.tables.os2?.sCapHeight ?? 0;
   if (!(capUnits > 0)) {

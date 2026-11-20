@@ -31,10 +31,18 @@ describe('normalizeConfig', () => {
     expect(normalizeConfig({ emblem: { id: null, face: 'cap' } }).emblem.id).toBeNull();
   });
 
-  test('testo oltre 16 caratteri dopo trim viene tagliato', () => {
+  test('testo oltre 16 caratteri viene tagliato senza togliere gli spazi', () => {
     expect(normalizeConfig({ text: { value: '  ' + 'A'.repeat(20) + ' ' } }).text.value).toBe(
-      'A'.repeat(16),
+      '  ' + 'A'.repeat(14),
     );
+  });
+
+  test('preserva lo spazio finale nel testo', () => {
+    expect(normalizeConfig({ text: { value: 'KUBO ' } }).text.value).toBe('KUBO ');
+  });
+
+  test('sostituisce i caratteri di controllo con spazi normali', () => {
+    expect(normalizeConfig({ text: { value: 'A\tB\n1' } }).text.value).toBe('A B 1');
   });
 
   test('testo ed emblema entrambi sulla calotta: l’emblema passa sul fronte', () => {

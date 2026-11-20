@@ -90,7 +90,9 @@ export function normalizeConfig(input: unknown): BoxConfig {
   const text = {
     value:
       typeof t.value === 'string'
-        ? Array.from(t.value.trim()).slice(0, DIMENSIONS.maxTextLength).join('')
+        ? Array.from(t.value.replace(/\p{Cc}/gu, ' '))
+            .slice(0, DIMENSIONS.maxTextLength)
+            .join('')
         : d.text.value,
     font: pick(t.font, FONT_IDS, d.text.font),
     face: pick(t.face, FACES, d.text.face),

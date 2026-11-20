@@ -75,6 +75,19 @@ describe('textToPolygons', () => {
     expect(missing).toEqual(['✓', '漢']);
     expect(polygons).not.toBeNull();
   });
+
+  test("'KUBO ' produce la stessa larghezza di 'KUBO'", () => {
+    const a = textToPolygons(fonts.display, 'KUBO ', 10);
+    const b = textToPolygons(fonts.display, 'KUBO', 10);
+    expect(Math.abs(bboxOf(a.polygons!).w - bboxOf(b.polygons!).w)).toBeLessThanOrEqual(1e-6);
+  });
+
+  test('segnala U+3000 come glifo mancante senza disegnare .notdef', () => {
+    const a = textToPolygons(fonts.display, 'A\u3000B', 10);
+    const b = textToPolygons(fonts.display, 'AB', 10);
+    expect(a.missing).toEqual(['\u3000']);
+    expect(Math.abs(bboxOf(a.polygons!).w - bboxOf(b.polygons!).w)).toBeLessThanOrEqual(1e-6);
+  });
 });
 
 describe('composeArt + buildParts', () => {
@@ -143,6 +156,13 @@ describe('composeArt + buildParts', () => {
     expect(g.ok).toBe(false);
     expect(g.message).toContain('✓');
     expect(g.message).toContain('漢');
+  });
+
+  test('U+3000: glyphs rosso e lo nomina', () => {
+    const { checks } = build(cfg({ value: 'A\u3000B', face: 'front' }, { id: null }));
+    const g = checks.find((c) => c.id === 'glyphs')!;
+    expect(g.ok).toBe(false);
+    expect(g.message).toContain('\u3000');
   });
 
   test.each(['', '   '])(

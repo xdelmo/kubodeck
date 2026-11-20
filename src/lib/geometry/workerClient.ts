@@ -19,8 +19,14 @@ class Superseded extends Error {}
 export const isSuperseded = (e: unknown) => e instanceof Superseded;
 
 function send(config: BoxConfig, resolve: (r: Ok) => void, reject: (e: Error) => void) {
-  worker ??= new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
-  worker.onmessage = ({ data }: MessageEvent<WorkerResponse>) => {
+  let w: Worker;
+  try {
+    w = worker ??= new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
+  } catch {
+    reject(new GenerateError('wasm'));
+    return;
+  }
+  w.onmessage = ({ data }: MessageEvent<WorkerResponse>) => {
     const cur = inFlight;
     if (!cur || data.id !== cur.id) return;
     inFlight = null;
@@ -32,14 +38,19 @@ function send(config: BoxConfig, resolve: (r: Ok) => void, reject: (e: Error) =>
       send(q.config, q.resolve, q.reject);
     }
   };
-  worker.onerror = () => {
+  w.onerror = () => {
     const cur = inFlight;
+    const q = queued;
     inFlight = null;
+    queued = null;
+    worker?.terminate();
+    worker = null;
     cur?.reject(new GenerateError('wasm'));
+    q?.reject(new GenerateError('wasm'));
   };
   const id = ++nextId;
   inFlight = { id, resolve, reject };
-  worker.postMessage({ id, config } satisfies WorkerRequest);
+  w.postMessage({ id, config } satisfies WorkerRequest);
 }
 
 export function generateInWorker(config: BoxConfig): Promise<Ok> {
