@@ -84,6 +84,23 @@ describe('toBinaryStl', () => {
   });
 });
 
+test('rispetta lo stride quando la mesh ha più di 3 proprietà per vertice', () => {
+  const cube = wasm.Manifold.cube([2, 3, 4]);
+  const withNormals = cube.calculateNormals(0);
+  try {
+    expect(withNormals.getMesh().numProp).toBeGreaterThan(3);
+    const { positions } = parseBinaryStl(toBinaryStl(withNormals));
+    for (let i = 0; i < positions.length; i += 3) {
+      expect([0, 2]).toContain(Math.round(positions[i]));
+      expect([0, 3]).toContain(Math.round(positions[i + 1]));
+      expect([0, 4]).toContain(Math.round(positions[i + 2]));
+    }
+  } finally {
+    withNormals.delete();
+    cube.delete();
+  }
+});
+
 describe('buildExportZip', () => {
   test('contiene i 5 STL e il LEGGIMI', () => {
     const files = unzipSync(buildExportZip(partsFor(DEFAULT_CONFIG)));
