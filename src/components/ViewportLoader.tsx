@@ -2,11 +2,14 @@
 
 import dynamic from 'next/dynamic';
 import styles from './Configurator.module.css';
+import { UI } from '../lib/i18n';
 
+// La lingua scelta è già su <html lang> quando la viewport si carica sul client.
 function Skeleton() {
+  const en = typeof document !== 'undefined' && document.documentElement.lang === 'en';
   return (
     <div className={styles.viewportSkeleton} role="status">
-      Carico il modello 3D…
+      {UI[en ? 'en' : 'it'].loadingViewport}
     </div>
   );
 }

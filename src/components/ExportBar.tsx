@@ -39,25 +39,25 @@ export function ExportBar({ parts, checks, weight, blocked, lang }: Props) {
   return (
     <section className={styles.exportBar} aria-label={t.checks}>
       <h2 className={styles.secTitle}>{t.checks}</h2>
-      <ul className={styles.checks}>
-        {checks
-          .filter((c) => c.ok)
-          .map((c) => (
+      <ul className={styles.checks} aria-live="polite">
+        {checks.map((c) =>
+          c.ok ? (
             <li key={c.id} className={styles.checkOk}>
               <svg aria-hidden="true" viewBox="0 0 12 12" className={styles.tick}>
                 <path d="M2 6.5 4.8 9 10 3" fill="none" stroke="currentColor" strokeWidth="1.6" />
               </svg>
               {checkMessage(c, lang)}
             </li>
-          ))}
+          ) : (
+            <li key={c.id} className={styles.checkFail}>
+              <svg aria-hidden="true" viewBox="0 0 12 12" className={styles.cross}>
+                <path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+              </svg>
+              <span className="sr-only">{t.checkFailed}</span> {checkMessage(c, lang)}
+            </li>
+          ),
+        )}
       </ul>
-      {failing.length > 0 && (
-        <ul className={styles.failures} role="alert">
-          {failing.map((c) => (
-            <li key={c.id}>{checkMessage(c, lang)}</li>
-          ))}
-        </ul>
-      )}
       <div className={styles.exportFoot}>
         {weight && (
           <div className={styles.weight}>
@@ -90,6 +90,7 @@ export function ExportBar({ parts, checks, weight, blocked, lang }: Props) {
           {t.downloadBlocked}
         </p>
       )}
+      <p className={styles.zipNote}>{t.zipContents}</p>
     </section>
   );
 }

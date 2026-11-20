@@ -65,7 +65,7 @@
     --stock: #303134;
     --stock-pressed: #3a3b3f;
     --ink: #e8e7e2;
-    --ink-muted: #a3a39e;
+    --ink-muted: #aaaaa5; /* 4,8:1 sull'etichetta premuta */
     --hairline: #45464a;
     --control-edge: #7c7d80;
     --signal: #f0743f;
@@ -86,7 +86,7 @@
   --stock: #303134;
   --stock-pressed: #3a3b3f;
   --ink: #e8e7e2;
-  --ink-muted: #a3a39e;
+  --ink-muted: #aaaaa5; /* 4,8:1 sull'etichetta premuta */
   --hairline: #45464a;
   --control-edge: #7c7d80;
   --signal: #f0743f;
@@ -106,5 +106,12 @@
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-view: 0ms;
+  }
+}
+
+/* Sul telefono niente testo sotto i 12 px. */
+@media (max-width: 900px) {
+  :root {
+    --text-2xs: 0.75rem;
   }
 }

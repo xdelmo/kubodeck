@@ -24,13 +24,12 @@ export function Filamenti({
   return (
     <fieldset className={styles.section}>
       <legend className={styles.secTitle}>{t.zones}</legend>
-      <div className={styles.zones} role="radiogroup" aria-label={t.zones}>
+      <div className={styles.zones} role="group" aria-label={t.zones}>
         {ZONE_IDS.map((z, i) => (
           <button
             key={z}
             type="button"
-            role="radio"
-            aria-checked={z === zone}
+            aria-pressed={z === zone}
             className={styles.zonePill}
             onClick={() => onZone(z)}
           >
@@ -42,7 +41,7 @@ export function Filamenti({
       </div>
       <div
         className={styles.swatches}
-        role="radiogroup"
+        role="group"
         aria-label={`${t.filament}: ${ZONE_LABEL[lang][zone]}`}
       >
         {Object.values(FILAMENTS).map((f) => {
@@ -51,8 +50,7 @@ export function Filamenti({
             <button
               key={f.id}
               type="button"
-              role="radio"
-              aria-checked={f.id === current}
+              aria-pressed={f.id === current}
               aria-label={`${f.line} ${name} ${f.code}`}
               title={`${f.line} ${name} · ${f.code}`}
               className={styles.swatch}

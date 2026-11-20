@@ -3,15 +3,16 @@
 import type * as React from 'react';
 import { type ComponentRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei';
+import { ContactShadows, Environment, Html, Lightformer, OrbitControls } from '@react-three/drei';
 import { MathUtils } from 'three';
 import type { Group } from 'three';
 import type { Part } from '../lib/geometry/box';
 import { plateOffsets, type Vec3 } from '../lib/geometry/plate';
-import { DIMENSIONS, type FilamentId, type ZoneId } from '../lib/config';
+import { DIMENSIONS, ZONE_IDS, type FilamentId, type ZoneId } from '../lib/config';
 import { FILAMENTS, type Filament } from '../lib/filaments';
 import { meshToGeometry } from '../lib/meshToGeometry';
 import { PlatePlane } from './PlateView';
+import styles from './Configurator.module.css';
 
 const BOX_WIDTH = DIMENSIONS.width;
 const BOX_HEIGHT = DIMENSIONS.height;
@@ -36,10 +37,15 @@ interface PartMeshProps {
   part: Part;
   filament: Filament;
   highlighted: boolean;
+  showCallout: boolean;
 }
 
-function PartMesh({ part, filament, highlighted }: PartMeshProps): React.JSX.Element {
+function PartMesh({ part, filament, highlighted, showCallout }: PartMeshProps): React.JSX.Element {
   const geometry = useMemo(() => meshToGeometry(part.manifold), [part.manifold]);
+  const calloutPosition = useMemo<Vec3>(() => {
+    const { min, max } = part.manifold.boundingBox();
+    return [(min[0] + max[0]) / 2, min[1] - 1, (min[2] + max[2]) / 2];
+  }, [part.manifold]);
 
   useEffect(() => {
     return () => {
@@ -50,19 +56,28 @@ function PartMesh({ part, filament, highlighted }: PartMeshProps): React.JSX.Ele
   const { hex, pbr } = filament;
 
   return (
-    <mesh geometry={geometry}>
-      <meshPhysicalMaterial
-        color={hex}
-        roughness={pbr.roughness}
-        metalness={pbr.metalness}
-        clearcoat={pbr.clearcoat ?? 0}
-        sheen={pbr.sheen ?? 0}
-        sheenColor="#ffffff"
-        sheenRoughness={0.65}
-        emissive={highlighted ? hex : '#000000'}
-        emissiveIntensity={highlighted ? 0.15 : 0}
-      />
-    </mesh>
+    <>
+      <mesh geometry={geometry}>
+        <meshPhysicalMaterial
+          color={hex}
+          roughness={pbr.roughness}
+          metalness={pbr.metalness}
+          clearcoat={pbr.clearcoat ?? 0}
+          sheen={pbr.sheen ?? 0}
+          sheenColor="#ffffff"
+          sheenRoughness={0.65}
+          emissive={highlighted ? hex : '#000000'}
+          emissiveIntensity={highlighted ? 0.3 : 0}
+        />
+      </mesh>
+      {showCallout && (
+        <Html position={calloutPosition} center zIndexRange={[10, 0]}>
+          <span className={styles.modelCallout} aria-hidden="true">
+            {ZONE_IDS.indexOf(part.zone) + 1}
+          </span>
+        </Html>
+      )}
+    </>
   );
 }
 
@@ -226,6 +241,13 @@ function DeckBoxScene({
 
   const bodyParts = parts.filter((part) => part.object === 'body');
   const capParts = parts.filter((part) => part.object === 'cap');
+  const firstBodyCalloutIndex = selectedZone
+    ? bodyParts.findIndex((part) => part.zone === selectedZone)
+    : -1;
+  const firstCapCalloutIndex =
+    selectedZone && firstBodyCalloutIndex === -1
+      ? capParts.findIndex((part) => part.zone === selectedZone)
+      : -1;
 
   return (
     <>
@@ -281,22 +303,24 @@ function DeckBoxScene({
           </group>
         )}
         <group ref={bodyGroupRef}>
-          {bodyParts.map((part) => (
+          {bodyParts.map((part, index) => (
             <PartMesh
               key={part.id}
               part={part}
               filament={FILAMENTS[filaments[part.zone]]}
               highlighted={selectedZone === part.zone}
+              showCallout={index === firstBodyCalloutIndex}
             />
           ))}
         </group>
         <group ref={capGroupRef}>
-          {capParts.map((part) => (
+          {capParts.map((part, index) => (
             <PartMesh
               key={part.id}
               part={part}
               filament={FILAMENTS[filaments[part.zone]]}
               highlighted={selectedZone === part.zone}
+              showCallout={index === firstCapCalloutIndex}
             />
           ))}
         </group>

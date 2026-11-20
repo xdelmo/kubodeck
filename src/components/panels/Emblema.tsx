@@ -42,11 +42,10 @@ export function Emblema({
           label={`${t.emblem}: ${t.face}`}
         />
       </div>
-      <div className={styles.emblems} role="radiogroup" aria-label={t.emblem}>
+      <div className={styles.emblems} role="group" aria-label={t.emblem}>
         <button
           type="button"
-          role="radio"
-          aria-checked={config.emblem.id === null}
+          aria-pressed={config.emblem.id === null}
           className={styles.emblem}
           onClick={() => set({ id: null })}
         >
@@ -56,8 +55,7 @@ export function Emblema({
           <button
             key={id}
             type="button"
-            role="radio"
-            aria-checked={config.emblem.id === id}
+            aria-pressed={config.emblem.id === id}
             aria-label={EMBLEM_LABEL[lang][id]}
             title={EMBLEM_LABEL[lang][id]}
             className={styles.emblem}

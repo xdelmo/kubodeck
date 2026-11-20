@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import type { Check } from '../src/lib/geometry/checks';
 
 const zipSpy = vi.fn(() => new Uint8Array([1, 2, 3]));
@@ -26,7 +26,29 @@ describe('ExportBar', () => {
     ];
     render(<ExportBar parts={[]} checks={checks} weight={weight} blocked lang="it" />);
     expect(screen.getByRole('button', { name: /scarica/i })).toHaveProperty('disabled', true);
-    expect(screen.getByRole('alert').textContent).toMatch(/0,8 mm/);
+    expect(screen.getByRole('list').textContent).toMatch(/0,8 mm/);
+  });
+
+  test("il controllo rosso resta nell'elenco, nell'ordine dei controlli", () => {
+    const checks: Check[] = [
+      { id: 'manifold', ok: true, message: '' },
+      { id: 'minStroke', ok: false, message: '', data: { faces: 'front' } },
+      { id: 'fitsPlate', ok: true, message: '', data: { x: 80, y: 60 } },
+    ];
+    render(<ExportBar parts={[]} checks={checks} weight={weight} blocked lang="it" />);
+    const items = within(screen.getByRole('list')).getAllByRole('listitem');
+    expect(items).toHaveLength(3);
+    expect(items[1].textContent).toContain('0,8 mm');
+    expect(items[1].textContent).toContain('Da sistemare:');
+  });
+
+  test('dichiara il contenuto dello zip', () => {
+    const { rerender } = render(
+      <ExportBar parts={[]} checks={green} weight={weight} blocked={false} lang="it" />,
+    );
+    expect(screen.getByText(/uno STL per colore/)).toBeTruthy();
+    rerender(<ExportBar parts={[]} checks={green} weight={weight} blocked={false} lang="en" />);
+    expect(screen.getByText(/one STL per colour/)).toBeTruthy();
   });
 
   test('tutto verde: il pulsante scarica lo zip', () => {

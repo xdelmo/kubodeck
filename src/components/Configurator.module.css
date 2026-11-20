@@ -18,6 +18,7 @@
 }
 
 .wordmark {
+  margin: 0;
   font-weight: var(--weight-heavy);
   font-size: var(--text-lg);
   letter-spacing: var(--tracking-mark);
@@ -85,7 +86,7 @@
   color: var(--ink-muted);
 }
 
-.seg button[aria-checked='true'] {
+.seg button[aria-pressed='true'] {
   background: var(--ink);
   color: var(--stock);
 }
@@ -352,7 +353,7 @@
 }
 
 .preset[aria-pressed='true'],
-.zonePill[aria-checked='true'] {
+.zonePill[aria-pressed='true'] {
   border-color: var(--ink);
   background: var(--stock-pressed);
 }
@@ -411,7 +412,7 @@
   cursor: pointer;
 }
 
-.swatch[aria-checked='true'] {
+.swatch[aria-pressed='true'] {
   outline: 2px solid var(--ink);
   outline-offset: 1px;
 }
@@ -481,7 +482,7 @@
   cursor: pointer;
 }
 
-.emblem[aria-checked='true'] {
+.emblem[aria-pressed='true'] {
   background: var(--ink);
   color: var(--stock);
   border-color: var(--ink);
@@ -639,10 +640,44 @@
 }
 
 @media (max-width: 420px) {
+  .modelTag {
+    display: none;
+  }
   .samples {
     grid-template-columns: 1fr;
   }
   .presets {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* Controllo rosso: resta al suo posto nell'elenco, con croce e testo che dice cosa cambiare. */
+.checkFail {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  color: var(--fail);
+  font-weight: var(--weight-semibold);
+}
+
+.cross {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  color: var(--fail);
+  align-self: center;
+}
+
+.zipNote {
+  margin-top: var(--space-2);
+  font-size: var(--text-2xs);
+  color: var(--ink-muted);
+}
+
+/* Richiamo numerato sul modello: lo stesso del campione, sulla zona selezionata. */
+.modelCallout {
+  composes: callout;
+  box-shadow: 0 0 0 2px var(--stock);
+  pointer-events: none;
+  user-select: none;
 }

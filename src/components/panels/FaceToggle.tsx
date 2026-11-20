@@ -17,15 +17,9 @@ export function FaceToggle({
 }) {
   const t = UI[lang];
   return (
-    <div className={styles.seg} role="radiogroup" aria-label={label}>
+    <div className={styles.seg} role="group" aria-label={label}>
       {(['front', 'cap'] as const).map((f) => (
-        <button
-          key={f}
-          type="button"
-          role="radio"
-          aria-checked={value === f}
-          onClick={() => onChange(f)}
-        >
+        <button key={f} type="button" aria-pressed={value === f} onClick={() => onChange(f)}>
           {f === 'front' ? t.faceFront : t.faceCap}
         </button>
       ))}

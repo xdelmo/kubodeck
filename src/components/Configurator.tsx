@@ -66,7 +66,7 @@ export function Configurator() {
     <>
       <header className={styles.topbar}>
         <div className={styles.brand}>
-          <span className={styles.wordmark}>KuboDeck</span>
+          <h1 className={styles.wordmark}>KuboDeck</h1>
           <span className={`${styles.modelTag} mono`}>Standard 60</span>
           <span className={styles.tagline}>{t.tagline}</span>
         </div>
@@ -74,15 +74,9 @@ export function Configurator() {
           <button type="button" className={styles.ghost} onClick={copy} aria-live="polite">
             {copied ? t.linkCopied : t.copyLink}
           </button>
-          <div className={styles.seg} role="radiogroup" aria-label={t.language}>
+          <div className={styles.seg} role="group" aria-label={t.language}>
             {LANGS.map((l) => (
-              <button
-                key={l}
-                type="button"
-                role="radio"
-                aria-checked={lang === l}
-                onClick={() => setLang(l)}
-              >
+              <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}>
                 {l.toUpperCase()}
               </button>
             ))}
@@ -162,20 +156,14 @@ export function Configurator() {
           </p>
         </section>
 
-        <aside className={styles.panel} aria-label={t.zones}>
+        <aside className={styles.panel} aria-label={t.configuration}>
           <div className={styles.secHead}>
             <span className={styles.secTitle} id="view-label">
               {t.view}
             </span>
-            <div className={styles.seg} role="radiogroup" aria-labelledby="view-label">
+            <div className={styles.seg} role="group" aria-labelledby="view-label">
               {(['assembled', 'plate'] as const).map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  role="radio"
-                  aria-checked={view === v}
-                  onClick={() => setView(v)}
-                >
+                <button key={v} type="button" aria-pressed={view === v} onClick={() => setView(v)}>
                   {v === 'assembled' ? t.viewAssembled : t.viewPlate}
                 </button>
               ))}
