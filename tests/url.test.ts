@@ -8,8 +8,8 @@ const changed: BoxConfig = {
   filaments: {
     body: 'pla-basic-white',
     cap: 'pla-matte-terracotta',
-    accent: 'pla-cf-black',
-    text: 'pla-silk-silver',
+    accent: 'pla-basic-black',
+    text: 'pla-basic-silver',
   },
   text: { value: 'Mazzo & Co', font: 'mono', face: 'cap' },
   emblem: { id: 'corona', face: 'front' },
@@ -46,7 +46,7 @@ test.each([
 
 test('decodeConfig restituisce un oggetto nuovo, non il default condiviso', () => {
   const a = decodeConfig('');
-  a.filaments.body = 'pla-cf-black';
+  a.filaments.body = 'pla-basic-black';
   expect(decodeConfig('').filaments.body).toBe(DEFAULT_CONFIG.filaments.body);
 });
 

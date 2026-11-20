@@ -1,24 +1,11 @@
+import { FILAMENTS } from './filaments';
+
 export type ZoneId = 'body' | 'cap' | 'accent' | 'text';
 export type FontId = 'display' | 'mono';
 export type EmblemId = 'fuoco' | 'acqua' | 'sole' | 'corona' | 'scudo' | 'stella';
 export type Face = 'front' | 'cap';
 
-// Chiavi provvisorie: il Task 6 le sostituisce con i dati verificati, mantenendo il formato.
-export const FILAMENT_IDS = [
-  'pla-matte-charcoal',
-  'pla-matte-ivory',
-  'pla-matte-terracotta',
-  'pla-matte-sakura',
-  'pla-basic-white',
-  'pla-basic-black',
-  'pla-basic-red',
-  'pla-basic-blue',
-  'pla-silk-gold',
-  'pla-silk-silver',
-  'pla-silk-copper',
-  'pla-cf-black',
-  'pla-cf-burgundy',
-] as const;
+export const FILAMENT_IDS: readonly string[] = Object.keys(FILAMENTS);
 export type FilamentId = string;
 
 export const ZONE_IDS: readonly ZoneId[] = ['body', 'cap', 'accent', 'text'];
@@ -72,8 +59,8 @@ export const DEFAULT_CONFIG: BoxConfig = {
   filaments: {
     body: 'pla-matte-charcoal',
     cap: 'pla-matte-charcoal',
-    accent: 'pla-silk-gold',
-    text: 'pla-silk-gold',
+    accent: 'pla-basic-gold',
+    text: 'pla-basic-gold',
   },
   text: { value: 'KUBODECK', font: 'display', face: 'front' },
   emblem: { id: 'stella', face: 'cap' },
