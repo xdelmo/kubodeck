@@ -1,6 +1,6 @@
 # KuboDeck
 
-Configuratore web di deck box stampabili in 3D per Bambu Lab A1 Mini, per 60 carte con doppia bustina (67 × 93 mm). Sito: https://kubodeck.netlify.app
+Configuratore web di deck box stampabili in 3D per Bambu Lab A1 Mini, per 60 carte con doppia bustina (67 × 93 mm). Sito: https://kubodeck.netlify.app · Documentazione tecnica: https://xdelmo.github.io/kubodeck/
 
 ## Cosa fa
 
@@ -51,7 +51,7 @@ Codice: MIT (vedi `LICENSE`).
 
 ## English
 
-Web configurator for 3D-printable deck boxes on Bambu Lab A1 Mini, sized for 60 double-sleeved cards (67 × 93 mm). Live at https://kubodeck.netlify.app
+Web configurator for 3D-printable deck boxes on Bambu Lab A1 Mini, sized for 60 double-sleeved cards (67 × 93 mm). Live at https://kubodeck.netlify.app · Technical docs: https://xdelmo.github.io/kubodeck/
 
 ### What it does
 
