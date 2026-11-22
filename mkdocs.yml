@@ -1,0 +1,89 @@
+site_url: https://xdelmo.github.io/kubodeck/
+site_name: KuboDeck — Architecture & Engineering
+site_description: Documentazione tecnica e architettura di KuboDeck, configuratore web di deck box stampabili in 3D
+copyright: "&copy; 2026 xdelmo &middot; KuboDeck"
+
+exclude_docs: |
+  superpowers/
+
+theme:
+  name: material
+  language: it
+  favicon: assets/images/favicon.ico
+  icon:
+    logo: material/cube-outline
+  font:
+    text: Plus Jakarta Sans
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Passa al tema chiaro
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Passa al tema scuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Segui il tema di sistema
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - 🚀 Executive Summary: index.md
+  - 🏗️ Architettura di Sistema: architecture.md
+  - 🧠 Deep Dives (Decisioni Tecniche):
+      - Geometria CSG e Memoria WASM: deep-dives/geometry-wasm.md
+      - Controlli di Stampa Automatici: deep-dives/print-checks.md
+      - Web Worker e Export STL/Zip: deep-dives/worker-and-export.md
+  - 💻 Developer Guide:
+      - Setup & Qualità del Codice: dev-guide/setup.md
+      - Build Statico & Deploy: dev-guide/ci-cd.md
+
+repo_url: https://github.com/xdelmo/kubodeck
+repo_name: xdelmo/kubodeck
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/xdelmo
+      name: GitHub Profile

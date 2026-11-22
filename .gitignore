@@ -43,3 +43,6 @@ next-env.d.ts
 
 # WASM copiato da node_modules
 public/manifold.wasm
+
+# MkDocs
+/site/

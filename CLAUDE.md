@@ -30,6 +30,10 @@ Lo stile passa dal flusso `/impeccable`: `init` (PRODUCT.md), `shape`, new-work 
 
 In `.claude/skills/<nome>/`, ognuna collegata da `.agents/skills/<nome>` con un symlink relativo.
 
+## Docs
+
+- **Docs**: new features/commands/behavior changes must update README.md and the MkDocs site in docs/ (register new pages in mkdocs.yml).
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
