@@ -1,0 +1,150 @@
+/* KuboDeck — tema Material derivato dai token CMF (DESIGN.md e src/app/tokens.css) */
+
+:root {
+  --kd-board: #d9d8d3;
+  --kd-board-deep: #cfcec8;
+  --kd-stock: #fbfbf9;
+  --kd-stock-pressed: #f1f0ec;
+  --kd-ink: #1b1c1e;
+  --kd-ink-muted: #5c5d60;
+  --kd-hairline: #c2c1bc;
+  --kd-signal: #c8461b;
+  --kd-signal-hover: #b93f16;
+  --kd-on-signal: #fbfbf9;
+  --kd-ok: #1d7a47;
+  --kd-fail: #b42318;
+  --kd-radius: 4px;
+}
+
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--kd-ink);
+  --md-primary-fg-color--light: #3a3b3f;
+  --md-primary-fg-color--dark: #111214;
+  --md-primary-bg-color: var(--kd-stock);
+  --md-accent-fg-color: var(--kd-signal);
+  --md-accent-fg-color--transparent: rgb(200 70 27 / 0.12);
+  --md-default-bg-color: var(--kd-stock);
+  --md-default-fg-color: var(--kd-ink);
+  --md-default-fg-color--light: var(--kd-ink-muted);
+  --md-code-bg-color: var(--kd-stock-pressed);
+  --md-typeset-a-color: var(--kd-signal-hover);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 220;
+  --md-primary-fg-color: #1f2022;
+  --md-primary-fg-color--light: #303134;
+  --md-primary-fg-color--dark: #151618;
+  --md-primary-bg-color: #e8e7e2;
+  --md-accent-fg-color: #f0743f;
+  --md-accent-fg-color--transparent: rgb(240 116 63 / 0.16);
+  --md-default-bg-color: #26272a;
+  --md-default-fg-color: #e8e7e2;
+  --md-default-fg-color--light: #aaaaa5;
+  --md-code-bg-color: #1f2022;
+  /* Link più chiari per mantenere il contrasto AA su --board scuro (#26272a) */
+  --md-typeset-a-color: #f58a5c;
+}
+
+/* Header: wordmark deciso e filetti coerenti con la tavola CMF */
+.md-header__topic:first-child {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Tipografia: interlinea comoda e griglia ampia */
+.md-typeset {
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.md-grid {
+  max-width: 1280px;
+}
+
+.md-typeset h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset h2 {
+  font-weight: 700;
+  margin-top: 2.2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Blocchi arrotondati (raggio 4px da --radius) */
+.md-typeset .admonition,
+.md-typeset details,
+.md-typeset .highlight,
+.md-typeset pre > code,
+.md-typeset .mermaid {
+  border-radius: var(--kd-radius);
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-width: 0 0 0 4px;
+  box-shadow: 0 2px 6px rgb(27 28 30 / 0.06);
+  transition: box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.md-typeset .admonition:hover,
+.md-typeset details:hover {
+  box-shadow: 0 4px 10px rgb(27 28 30 / 0.14);
+}
+
+/* Tabelle: header ink/stock e angoli coerenti */
+.md-typeset table:not([class]) {
+  border-radius: var(--kd-radius);
+  overflow: hidden;
+  font-size: 0.78rem;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+.md-typeset :not(pre) > code {
+  border-radius: 3px;
+  padding: 0.1em 0.35em;
+}
+
+/* Focus ben visibile per la navigazione da tastiera */
+.md-typeset a:focus-visible,
+.md-nav__link:focus-visible,
+.md-tabs__link:focus-visible,
+.md-header__button:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.md-typeset a,
+.md-nav__link,
+.md-tabs__link {
+  transition: color 120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Footer coerente con l'header */
+.md-footer-meta {
+  background-color: var(--md-primary-fg-color--dark);
+}
+
+/* Mobile: testo leggermente più grande (niente sotto i 12 px) */
+@media screen and (max-width: 44.984375em) {
+  .md-typeset {
+    font-size: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
